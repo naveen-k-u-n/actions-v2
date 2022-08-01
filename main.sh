@@ -30,8 +30,11 @@ convert_live_date=$(date -u -d "$live_date" +%s)
 convert_pr_updated_at=$(date -u -d "$pr_updated_at" +%s)
 DIFFERENCE=$((convert_live_date - convert_pr_updated_at))
 SECONDSPERDAY=86400
-STALE_LABEL=$(( STALE_DAYS * SECONDSPERDAY ))
-STALE_CLOSE=$(( CLOSE_DAYS * SECONDSPERDAY ))
+# STALE_LABEL=$(( STALE_DAYS * SECONDSPERDAY ))
+# STALE_CLOSE=$(( CLOSE_DAYS * SECONDSPERDAY ))
+STALE_LABEL=86300
+STALE_CLOSE=86500
+
 
 echo "live date: $live_date"
 echo "convert live date: $convert_live_date"
