@@ -44,16 +44,19 @@ echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
 (DIFFERENCE < STALE_LABEL) * 1 +
-(DIFFERENCE > STALE_CLOSE) * 2 +
-(pr_number = null) * 3)) in
+(DIFFERENCE > STALE_LABEL) * 2 +
+(DIFFERENCE >= STALE_CLOSE) * 3 +
+(pr_number = null) * 4)) in
 (1) echo "This PR is active."
+;;
+(2) echo "This PR is Stale."
   curl -X POST -u $owner:$token $label \
   -d '{ "labels":["Stale"] }'
 
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
 ;;
-(2) echo "This PR is stale and close"
+(3) echo "This PR is stale and close"
 
   curl -X PATCH -u $owner:$token $pr_number \
   -d '{ "state": "closed" }'
@@ -61,7 +64,7 @@ case $((
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR was closed because it has been stalled for 2 days with no activity."}'
   ;;
-(3) echo "No active PRs"
+(4) echo "No active PRs"
   ;;  
 esac  
 
