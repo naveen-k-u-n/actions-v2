@@ -24,7 +24,7 @@ pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r
 pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
 comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 label=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
-label_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/$pr_number/labels | jq -r '.[-1].name')
+# label_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/$pr_number/labels | jq -r '.[-1].name')
 
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 convert_live_date=$(date -u -d "$live_date" +%s)
