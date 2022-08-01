@@ -1,0 +1,81 @@
+name: "Main action file of composite actions"
+description: "composite actions"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "Token used to access repo"
+    required: false
+  owner:
+    description: owner name
+    default: ${{ github.repository_owner }}
+    required: false 
+  repo:
+    description: repository name
+    default: ${{ github.repository }}
+    required: false 
+  base:
+    description: Base URI
+    default: "https://api.github.com"
+    required: false  
+  head_ref:  
+    description: Head Refer branch
+    default: ${{ contains(github.head_ref, 'release') }}
+    required: false
+  base_ref:
+    description: Base Refer branch
+    default: ${{ contains(github.base_ref, 'master') }}
+    required: false  
+  pr_description:
+    description: PR description
+    required: false  
+  pr_number:
+    description: PR number
+    required: false
+  merge_pr:
+    description: PR number
+    required: false
+  close_pr:
+    description: PR number
+    required: false  
+  stale_days:
+    description: stale pr
+    required: false  
+  close_days:
+    description: close stale pr
+    required: false      
+    
+runs:
+  using: "composite"
+  steps:
+    - name: stale pr 
+      # if: ${{ github.event_name == 'schedule' }}
+      run: ${{ github.action_path }}/main.sh stale
+      shell: bash 
+    - name: description pr
+      if: inputs.pr_description == 'true'
+      run: ${{ github.action_path }}/main.sh description
+      shell: bash
+    - name: target pr  
+      if: inputs.base_ref == 'true' && inputs.head_ref == 'false'
+      run: ${{ github.action_path }}/main.sh target
+      shell: bash  
+    - name: merge pr  
+      if: inputs.merge_pr == 'true'
+      run: ${{ github.action_path }}/main.sh merge
+      shell: bash 
+    - name: close pr  
+      if: inputs.close_pr == 'true'
+      run: ${{ github.action_path }}/main.sh close
+      shell: bash       
+      env:
+        REPO_OWNER: ${{ inputs.owner }}
+        REPO_NAME: ${{ inputs.repo }}
+        BASE_URI: ${{ inputs.base }}
+        HEAD_REF: ${{ inputs.head_ref }}
+        BASE_REF: ${{ inputs.base_ref }}
+        PR_DESCRIPTION: ${{ inputs.pr_description }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        MERGE_PR: ${{ inputs.merge_pr }}
+        CLOSE_PR: ${{ inputs.close_pr }}
+        STALE_DAYS: ${{ inputs.stale_days }}
+        CLOSE_DAYS: ${{ inputs.close_days }}
