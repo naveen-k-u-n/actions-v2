@@ -27,8 +27,8 @@ DIFFERENCE=$((convert_live_date - convert_pr_updated_at))
 SECONDSPERDAY=86400
 # STALE_LABEL=$(( STALE_DAYS * SECONDSPERDAY ))
 # STALE_CLOSE=$(( CLOSE_DAYS * SECONDSPERDAY ))
-STALE_LABEL=60
-STALE_CLOSE=120
+STALE_LABEL=120
+STALE_CLOSE=180
 
 
 echo "live date: $live_date"
@@ -42,8 +42,7 @@ echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
-(DIFFERENCE > STALE_LABEL && DIFFERENCE <= STALE_CLOSE) * 2 +
-(DIFFERENCE > STALE_CLOSE) * 3)) in
+(DIFFERENCE > STALE_LABEL) * 2)) in
 (1) echo "This PR is active."
 ;;
 (2) echo "This PR is Stale."
@@ -53,15 +52,8 @@ case $((
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
 ;;
-(3) echo "This PR is stale and close"
-
-  curl -X PATCH -u $owner:$token $pr_number \
-  -d '{ "state": "closed" }'
-
-  curl -X POST -u $owner:$token $comments_url \
-  -d '{"body":"This PR was closed because it has been stalled for 2 days with no activity."}'
+(0) echo "Non of them match"
 ;;
- 
 esac  
 
 }

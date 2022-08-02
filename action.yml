@@ -51,6 +51,10 @@ runs:
       # if: ${{ github.event_name == 'schedule' && github.event_name == 'workflow_dispatch' }}
       run: ${{ github.action_path }}/main.sh stale
       shell: bash 
+    # - name: stale pr 
+    #   if: ${{ github.event.label.name == 'Stale' }}
+    #   run: ${{ github.action_path }}/main.sh stale-close
+    #   shell: bash   
     - name: description pr
       if: inputs.pr_description == 'true'
       run: ${{ github.action_path }}/main.sh description
