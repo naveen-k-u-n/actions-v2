@@ -1,7 +1,6 @@
 # !/bin/bash
 
 PR_URL="$PR_URL"
-
 token="$GITHUB_TOKEN"
 BASE_URI="https://api.github.com"
 owner="$REPO_OWNER"
@@ -19,8 +18,9 @@ stale=120
 close=60
 
 #date and time of PR
-latest_commit_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$owner/$repo/pulls/$pull_number/commits | jq -r '.[-1].commit.committer.date')
-stale_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$owner/$repo/pulls/$pull_number | jq -r '.updated_at')
+# pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
+latest_commit_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number/commits | jq -r '.[-1].commit.committer.date')
+stale_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number | jq -r '.updated_at')
 
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 convert_live_date=$(date -u -d "$live_date" +%s)
@@ -54,7 +54,7 @@ then
    gh pr close $PR_URL
    gh pr edit $PR_URL --remove-label "Stale"
    gh pr comment $PR_URL --body "This PR was closed because it has been stalled for 4 days with no activity."
-   
+
 else
    echo "None of the condition met"
 fi
