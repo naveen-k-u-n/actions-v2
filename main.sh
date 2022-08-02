@@ -22,6 +22,9 @@ close=60
 latest_commit_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number/commits | jq -r '.[-1].commit.committer.date')
 stale_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number | jq -r '.updated_at')
 
+comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
+label=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
+
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 convert_live_date=$(date -u -d "$live_date" +%s)
 convert_latest_commit_date=$(date -u -d "$latest_commit_date" +%s)
