@@ -42,7 +42,7 @@ echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
-(DIFFERENCE >= STALE_LABEL) * 2)) in
+(DIFFERENCE <= STALE_LABEL) * 2)) in
 (1) echo "This PR is active."
 ;;
 (2) echo "This PR is Stale."
