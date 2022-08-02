@@ -38,23 +38,48 @@ echo "convert stale label date: $convert_stale_date"
 echo "difference time: $DIFFERENCE"
 echo "label difference time: $label_diff"
 
+case $((
+(DIFFERENCE < $active) * 1 +
+(DIFFERENCE <= $stale) * 2 +
+(label_diff > $close) * 3)) in
+(1) echo "This PR is active."
+;;
+(2) echo "This PR is Stale."
+  curl -X POST -u $owner:$token $label \
+  -d '{ "labels":["Stale"] }'
 
-if [ $DIFFERENCE -lt $active ]
-then
-   echo "This PR is active. Don't close PR"
-   gh pr edit $PR_URL --remove-label "Stale"
-elif [ $DIFFERENCE -le $stale ]
-then
-   echo "This PR is stale because it has been open 10 days with no activity."
-   gh pr edit $PR_URL --add-label "Stale" 
-   gh pr comment $PR_URL --body "This issue is stale because it has been open 10 days with no activity. Remove stale label or comment or this will be closed in 4 days."
-elif [ $label_diff -gt $close ]
-then
-   echo "This PR was closed because it has been stalled for 4 days with no activity."
-   gh pr close $PR_URL
-   gh pr edit $PR_URL --remove-label "Stale"
-   gh pr comment $PR_URL --body "This PR was closed because it has been stalled for 4 days with no activity."
+  curl -X POST -u $owner:$token $comments_url \
+  -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
+;;
+(3) echo "This PR is stale and close"
 
-else
-   echo "None of the condition met"
-fi
+  curl -X PATCH -u $owner:$token $pr_number \
+  -d '{ "state": "closed" }'
+
+  curl -X POST -u $owner:$token $comments_url \
+  -d '{"body":"This PR was closed because it has been stalled for 2 days with no activity."}'
+;;
+(0) echo "Non of the match"
+;;
+esac  
+
+
+# if [ $DIFFERENCE -lt $active ]
+# then
+#    echo "This PR is active. Don't close PR"
+#    gh pr edit $PR_URL --remove-label "Stale"
+# elif [ $DIFFERENCE -le $stale ]
+# then
+#    echo "This PR is stale because it has been open 10 days with no activity."
+#    gh pr edit $PR_URL --add-label "Stale" 
+#    gh pr comment $PR_URL --body "This issue is stale because it has been open 10 days with no activity. Remove stale label or comment or this will be closed in 4 days."
+# elif [ $label_diff -gt $close ]
+# then
+#    echo "This PR was closed because it has been stalled for 4 days with no activity."
+#    gh pr close $PR_URL
+#    gh pr edit $PR_URL --remove-label "Stale"
+#    gh pr comment $PR_URL --body "This PR was closed because it has been stalled for 4 days with no activity."
+
+# else
+#    echo "None of the condition met"
+# fi
