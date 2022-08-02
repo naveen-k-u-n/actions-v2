@@ -49,7 +49,7 @@ runs:
   steps:
     - name: stale pr 
       # if: ${{ github.event_name == 'schedule' && github.event_name == 'workflow_dispatch' }}
-      run: ${{ github.action_path }}/main.sh stale
+      run: ${{ github.action_path }}/main.sh
       shell: bash 
     # - name: stale pr 
     #   if: ${{ github.event.label.name == 'Stale' }}
