@@ -27,8 +27,8 @@ DIFFERENCE=$((convert_live_date - convert_pr_updated_at))
 SECONDSPERDAY=86400
 # STALE_LABEL=$(( STALE_DAYS * SECONDSPERDAY ))
 # STALE_CLOSE=$(( CLOSE_DAYS * SECONDSPERDAY ))
-STALE_LABEL=100
-STALE_CLOSE=200
+STALE_LABEL=60
+STALE_CLOSE=120
 
 
 echo "live date: $live_date"
@@ -41,8 +41,8 @@ echo "Days Before Stale in seconds: $STALE_LABEL"
 echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
-(DIFFERENCE < STALE_LABEL) * 1 +
-(DIFFERENCE > STALE_LABEL) * 2 +
+(DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
+(DIFFERENCE > STALE_LABEL && DIFFERENCE <= STALE_CLOSE) * 2 +
 (DIFFERENCE > STALE_CLOSE) * 3)) in
 (1) echo "This PR is active."
 ;;
