@@ -5,6 +5,9 @@ token="$GITHUB_TOKEN"
 BASE_URI="https://api.github.com"
 owner="$REPO_OWNER"
 repo="$REPO_NAME"
+
+PR_NUMBER=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
+
 pull_number="$PR_NUMBER"
 
 #time
