@@ -11,7 +11,7 @@ repo="$REPO_NAME"
 pull_number="$PR_NUMBER"
 
 # Stale Pull Request
-stale() {
+stale-close() {
 
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 
@@ -42,18 +42,10 @@ echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
-(DIFFERENCE >= STALE_LABEL && DIFFERENCE <= STALE_CLOSE) * 2 +
-(DIFFERENCE > STALE_CLOSE) * 3)) in
+(DIFFERENCE > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
 ;;
-(2) echo "This PR is Stale."
-  curl -X POST -u $owner:$token $label \
-  -d '{ "labels":["Stale"] }'
-
-  curl -X POST -u $owner:$token $comments_url \
-  -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
-;;
-(3) echo "This PR is stale and close"
+(2) echo "This PR is stale and close"
 
   curl -X PATCH -u $owner:$token $pr_number \
   -d '{ "state": "closed" }'

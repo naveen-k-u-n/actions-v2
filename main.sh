@@ -1,53 +1,49 @@
-# !/bin/bash
+#!/bin/bash
 
-PR_URL="$PR_URL"
+STALE_DAYS=$STALE_DAYS
+CLOSE_DAYS=$CLOSE_DAYS
+
+# for curl API
 token="$GITHUB_TOKEN"
 BASE_URI="https://api.github.com"
 owner="$REPO_OWNER"
 repo="$REPO_NAME"
-
-PR_NUMBER=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
-
 pull_number="$PR_NUMBER"
 
-#time
-aday=86400 #24 hrs
-four_days=345600
-nine_days=777600
-ten_days=864000
+# Stale Pull Request
+stale() {
 
-active=100
-stale=120
-close=60
+pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 
-#date and time of PR
-# pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
-latest_commit_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number/commits | jq -r '.[-1].commit.committer.date')
-stale_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls/$pull_number | jq -r '.updated_at')
-
+pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
 comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 label=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
+# label_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/$pr_number/labels | jq -r '.[-1].name')
 
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 convert_live_date=$(date -u -d "$live_date" +%s)
-convert_latest_commit_date=$(date -u -d "$latest_commit_date" +%s)
-convert_stale_date=$(date -u -d "$stale_date" +%s)
-DIFFERENCE=$((convert_live_date - convert_latest_commit_date))
-label_diff=$((convert_live_date - convert_stale_date))
+convert_pr_updated_at=$(date -u -d "$pr_updated_at" +%s)
+DIFFERENCE=$((convert_live_date - convert_pr_updated_at))
+SECONDSPERDAY=86400
+# STALE_LABEL=$(( STALE_DAYS * SECONDSPERDAY ))
+# STALE_CLOSE=$(( CLOSE_DAYS * SECONDSPERDAY ))
+STALE_LABEL=120
+STALE_CLOSE=160
 
-echo "latest commit date: $latest_commit_date"
-echo "stale label date: $stale_date"
+
 echo "live date: $live_date"
 echo "convert live date: $convert_live_date"
-echo "convert latest commit date: $convert_latest_commit_date"
-echo "convert stale label date: $convert_stale_date"  
+echo "pr updated at: $pr_updated_at"
+echo "convert pr updated date: $convert_pr_updated_at"  
 echo "difference time: $DIFFERENCE"
-echo "label difference time: $label_diff"
+echo "pr number: $pr_number"
+echo "Days Before Stale in seconds: $STALE_LABEL"
+echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
-(DIFFERENCE < $active) * 1 +
-(DIFFERENCE <= $stale) * 2 +
-(label_diff > $close) * 3)) in
+(DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
+(DIFFERENCE > STALE_LABEL) * 2 +
+(DIFFERENCE > STALE_CLOSE) * 3)) in
 (1) echo "This PR is active."
 ;;
 (2) echo "This PR is Stale."
@@ -69,23 +65,6 @@ case $((
 ;;
 esac  
 
+}
 
-# if [ $DIFFERENCE -lt $active ]
-# then
-#    echo "This PR is active. Don't close PR"
-#    gh pr edit $PR_URL --remove-label "Stale"
-# elif [ $DIFFERENCE -le $stale ]
-# then
-#    echo "This PR is stale because it has been open 10 days with no activity."
-#    gh pr edit $PR_URL --add-label "Stale" 
-#    gh pr comment $PR_URL --body "This issue is stale because it has been open 10 days with no activity. Remove stale label or comment or this will be closed in 4 days."
-# elif [ $label_diff -gt $close ]
-# then
-#    echo "This PR was closed because it has been stalled for 4 days with no activity."
-#    gh pr close $PR_URL
-#    gh pr edit $PR_URL --remove-label "Stale"
-#    gh pr comment $PR_URL --body "This PR was closed because it has been stalled for 4 days with no activity."
-
-# else
-#    echo "None of the condition met"
-# fi
+"$@"
