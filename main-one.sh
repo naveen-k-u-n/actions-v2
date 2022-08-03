@@ -17,12 +17,13 @@ pr_created_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 
 pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
+issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 label=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 
 
-label_created_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/$PR_NUMBER/timeline | jq -r '.[-1].created_at')
-timeline_label=$(curl -X GET -u $BASE_URI/repos/$repo/issues/$PR_NUMBER | jq -r '.[] | select( .label.name == "Stale" )')
+label_created_at=$(curl -X GET -u $issue_number/timeline | jq -r '.[-1].created_at')
+timeline_label=$(curl -X GET -u $issue_number/timeline | jq -r '.[] | select( .label.name == "Stale" )')
 
 # echo "live date: $live_date"
 # echo "convert live date: $convert_live_date"
@@ -39,8 +40,8 @@ convert_label_created_at=$(date -u -d "$label_created_at" +%s)
 DIFFERENCE=$((convert_live_date - convert_pr_updated_at))
 DIFFERENCE_LABEL=$((convert_live_date - convert_label_created_at))
 SECONDSPERDAY=86400
-MIN_LABEL=120
-MAX_LABEL=160
+MIN_LABEL=500
+MAX_LABEL=800
 
 
 echo "live date: $live_date"
