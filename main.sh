@@ -16,6 +16,7 @@ stale() {
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 
 pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
+issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 label=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 # label_date=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/$pr_number/labels | jq -r '.[-1].name')
@@ -45,12 +46,11 @@ case $((
 (DIFFERENCE > STALE_LABEL) * 2 +
 (DIFFERENCE > STALE_CLOSE) * 3)) in
 (1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $label \
-  -d '{ "labels":["Stale"] }'
+  curl -X DELETE -u $owner:$token $issue_number/labels/stale
 ;;
 (2) echo "This PR is Stale."
   curl -X POST -u $owner:$token $label \
-  -d '{ "labels":["Stale"] }'
+  -d '{ "labels":["stale"] }'
 
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
