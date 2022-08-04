@@ -51,7 +51,7 @@ echo "difference label time: $DIFFERENCE_LABEL"
 
 
 case $((
-(DIFFERENCE <= UPDATED_AT) * 1 +
+(DIFFERENCE < UPDATED_AT) * 1 +
 (DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
 ;;
