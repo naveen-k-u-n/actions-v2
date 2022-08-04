@@ -30,7 +30,7 @@ DIFFERENCE_LABEL=$((convert_live_date - convert_label_created_at))
 updateAt_labelCreate=$((convert_pr_updated_at - convert_label_created_at))
 
 SECONDSPERDAY=86400
-UPDATED_At=120
+UPDATED_AT=120
 STALE_CLOSE=160
 
 echo "pr number: $pr_number"
@@ -51,7 +51,7 @@ echo "difference label time: $DIFFERENCE_LABEL"
 
 
 case $((
-(DIFFERENCE_LABEL <= UPDATED_At) * 1 +
+(DIFFERENCE <= UPDATED_AT) * 1 +
 (DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
 ;;
