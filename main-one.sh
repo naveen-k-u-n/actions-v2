@@ -57,26 +57,9 @@ echo "difference label time: $DIFFERENCE_LABEL"
 echo "Days Before Stale in seconds: $STALE_DAYS"
 echo "Days Before Close in seconds: $STALE_CLOSE"
 
-
 case $((
-(DIFFERENCE >= 0 && DIFFERENCE <= STALE_DAYS) * 1 +
-(DIFFERENCE > STALE_DAYS) * 2)) in
-(1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $issue_number/labels/stale
-;;
-(2) echo "This PR is Stale."
-  curl -X POST -u $owner:$token $issue_number \
-  -d '{ "labels":["stale"] }'
-
-  curl -X POST -u $owner:$token $comments_url \
-  -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 2 days."}' 
-;;
-
-esac  
-
-case $((
-(DIFFERENCE_LABEL > STALE_CLOSE) * 3)) in
-(3) echo "This PR is stale and close"
+(DIFFERENCE_LABEL > STALE_CLOSE) * 1)) in
+(1) echo "This PR is stale and close"
 
   # curl -X PATCH -u $owner:$token $pr_number \
   # -d '{ "state": "closed" }'
@@ -88,6 +71,5 @@ case $((
 esac  
 
 }
-
 
 "$@"

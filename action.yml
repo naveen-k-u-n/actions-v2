@@ -52,7 +52,7 @@ runs:
     #   run: ${{ github.action_path }}/main.sh stale
     #   shell: bash 
     - name: close stale pr 
-      # if: ${{ github.event.label.name == 'Stale' }}
+      if: ${{ github.event.label.name == 'Stale' }}
       run: ${{ github.action_path }}/main-one.sh stale-close
       shell: bash   
     - name: description pr
