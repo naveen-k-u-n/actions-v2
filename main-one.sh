@@ -15,6 +15,7 @@ stale-close() {
 
 pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
 issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
+comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 pr_created_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].created_at')
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 label_created_at=$(curl -X GET -u $owner:$token $issue_number/events | jq -r '.[-1] | select(.event == "labeled") | select( .label.name == "Stale") | .created_at')
@@ -32,6 +33,7 @@ DIFFERENCE_UNLABEL=$((convert_live_date - convert_unlabel_created_at))
 updateAt_labelCreate=$((convert_pr_updated_at - convert_label_created_at))
 
 SECONDSPERDAY=86400
+STALE_DAYS=120
 UPDATED_AT=120
 STALE_CLOSE=160
 
@@ -55,10 +57,10 @@ echo "difference label time: $DIFFERENCE_LABEL"
 
 
 case $((
-(DIFFERENCE_LABEL < DIFFERENCE) * 1 +
-(DIFFERENCE_LABEL > DIFFERENCE) * 2)) in
+(DIFFERENCE >= 0 && DIFFERENCE <= STALE_DAYS) * 1 +
+(DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $issue_number/labels/stale
+  curl -X DELETE -u $owner:$token $issue_number/labels/Stale
 ;;
 (2) echo "This PR is stale and close"
 
