@@ -62,10 +62,10 @@ case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_DAYS) * 1 +
 (DIFFERENCE > STALE_DAYS) * 2)) in
 (1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $issue_number/labels/Stale
+  curl -X DELETE -u $owner:$token $issue_number/labels/stale
 ;;
 (2) echo "This PR is Stale."
-  curl -X POST -u $owner:$token $label \
+  curl -X POST -u $owner:$token $issue_number \
   -d '{ "labels":["stale"] }'
 
   curl -X POST -u $owner:$token $comments_url \
