@@ -57,7 +57,7 @@ echo "difference label time: $DIFFERENCE_LABEL"
 
 
 case $((
-(DIFFERENCE >= 0 && DIFFERENCE <= STALE_DAYS) * 1 +
+(DIFFERENCE < STALE_DAYS) * 1 +
 (DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
   curl -X DELETE -u $owner:$token $issue_number/labels/Stale
