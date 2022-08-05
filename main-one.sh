@@ -54,13 +54,15 @@ echo "difference updateAt-labelCreate: $updateAt_labelCreate"
 
 echo "difference time: $DIFFERENCE"
 echo "difference label time: $DIFFERENCE_LABEL"
+echo "Days Before Stale in seconds: $STALE_DAYS"
+echo "Days Before Close in seconds: $STALE_CLOSE"
 
 
 case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_DAYS) * 1 +
 (DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
 (1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $issue_number/labels/stale
+  curl -X DELETE -u $owner:$token $issue_number/labels/Stale
 ;;
 (2) echo "This PR is Stale."
   # curl -X POST -u $owner:$token $label \
