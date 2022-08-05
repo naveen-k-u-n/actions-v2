@@ -54,22 +54,22 @@ echo "difference time: $DIFFERENCE"
 echo "difference label time: $DIFFERENCE_LABEL"
 
 
-# case $((
-# (DIFFERENCE < UPDATED_AT) * 1 +
-# (DIFFERENCE_LABEL > STALE_CLOSE) * 2)) in
-# (1) echo "This PR is active."
-# ;;
-# (2) echo "This PR is stale and close"
+case $((
+(DIFFERENCE_LABEL < UPDATED_AT) * 1 +
+(DIFFERENCE_LABEL > UPDATED_AT) * 2)) in
+(1) echo "This PR is active."
+;;
+(2) echo "This PR is stale and close"
 
-#   # curl -X PATCH -u $owner:$token $pr_number \
-#   # -d '{ "state": "closed" }'
+  # curl -X PATCH -u $owner:$token $pr_number \
+  # -d '{ "state": "closed" }'
 
-#   # curl -X POST -u $owner:$token $comments_url \
-#   # -d '{"body":"This PR was closed because it has been stalled for 2 days with no activity."}'
-# ;;
-# (0) echo "Non of the match"
-# ;;
-# esac  
+  # curl -X POST -u $owner:$token $comments_url \
+  # -d '{"body":"This PR was closed because it has been stalled for 2 days with no activity."}'
+;;
+(0) echo "Non of the match"
+;;
+esac  
 
 }
 
