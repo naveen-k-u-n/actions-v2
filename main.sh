@@ -45,7 +45,7 @@ case $((
 (DIFFERENCE >= 0 && DIFFERENCE <= STALE_LABEL) * 1 +
 (DIFFERENCE > STALE_LABEL) * 2)) in
 (1) echo "This PR is active."
-  curl -X DELETE -u $owner:$token $issue_number/labels/stale
+  # curl -X DELETE -u $owner:$token $issue_number/labels/stale
 ;;
 (2) echo "This PR is Stale."
   curl -X POST -u $owner:$token $label \
