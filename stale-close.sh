@@ -58,7 +58,7 @@ echo "Days Before Stale in seconds: $STALE_DAYS"
 echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
-(DIFFERENCE_LABEL > STALE_CLOSE) * 1)) in
+(DIFFERENCE_LABEL > 60) * 1)) in
 (1) echo "This PR is staled and closed"
 
   # curl -X PATCH -u $owner:$token $pr_number \
