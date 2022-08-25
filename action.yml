@@ -48,11 +48,11 @@ runs:
   using: "composite"
   steps:
     - name: stale pr 
-      if: ${{ github.event_name == 'schedule' && github.event.label.name !== 'stale'}}
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.label.name !== 'stale'}}
       run: ${{ github.action_path }}/main-one.sh stale
       shell: bash 
     - name: close pr 
-      if: ${{ github.event.label.name == 'stale' && github.event_name == 'schedule'}}
+      if: ${{ github.event.label.name == 'stale' && github.event_name == 'workflow_dispatch'}}
       run: ${{ github.action_path }}/stale-close.sh stale-close
       shell: bash     
     - name: remove stale label
