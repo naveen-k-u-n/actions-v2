@@ -55,7 +55,7 @@ runs:
       shell: bash 
     - name: close pr 
       # if: ${{ github.event.label.name == 'Stale' && github.event_name == 'workflow_dispatch' }}
-      if: contains(github.event.label.name, 'Stale' && github.event_name, 'workflow_dispatch' )
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       run: ${{ github.action_path }}/stale-close.sh stale-close
       shell: bash     
     # - name: remove stale label
