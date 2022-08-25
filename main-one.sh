@@ -43,7 +43,7 @@ echo "Days Before Close in seconds: $STALE_CLOSE"
 
 case $((
 (DIFFERENCE < 80) * 1 +
-(DIFFERENCE > 80 && DIFFERENCE < 300) * 2)) in
+(DIFFERENCE > 80 && DIFFERENCE < 150) * 2)) in
 (1) echo "This PR is active."
   # curl -X DELETE -u $owner:$token $issue_number/labels/stale
 ;;
