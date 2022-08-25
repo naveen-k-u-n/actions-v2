@@ -50,7 +50,7 @@ runs:
     - name: stale pr 
       # if: ${{ github.event_name == 'workflow_dispatch' }}
       # if: ${{ github.event.label.name != 'Stale' }}
-      if: contains(!github.event.label.name, 'Stale' || github.event_name == 'workflow_dispatch' )
+      if: ${{ github.event_name == 'workflow_dispatch' || github.event.label.name != 'Stale' }}
       run: ${{ github.action_path }}/main-one.sh stale
       shell: bash 
     - name: close pr 
