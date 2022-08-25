@@ -35,7 +35,7 @@ updateAt_labelCreate=$((convert_pr_updated_at - convert_label_created_at))
 SECONDSPERDAY=86400
 STALE_DAYS=120
 UPDATED_AT=120
-STALE_CLOSE=100
+STALE_CLOSE=60
 
 echo "pr number: $pr_number"
 echo "issue number: $issue_number"
