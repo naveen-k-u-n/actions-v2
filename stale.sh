@@ -119,7 +119,8 @@ then
 fi
 
 
-
+comments()
+{
 if [ "$user" = "$GitBot" ];
 then
   echo "Dont remove stale label"
@@ -131,5 +132,6 @@ then
   curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
 fi
+}
 
 "$@"
