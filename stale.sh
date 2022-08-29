@@ -128,7 +128,7 @@ fi
 if [ "$user" = "User" ];
 then
   echo "Remove stale label"
-  curl -X DELETE -u $owner:$token $BASE_URI/repos/$repo/issues/labels \
+  curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
 fi
 
