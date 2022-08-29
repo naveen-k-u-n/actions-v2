@@ -52,7 +52,7 @@ runs:
       run: ${{ github.action_path }}/stale.sh
       shell: bash 
     - name: issue comments 
-      if: ${{ github.event.comment.body == '' }}
+      if: ${{ github.event.issue.pull_request }}
       run: ${{ github.action_path }}/stale.sh comments
       shell: bash       
     - name: description pr
