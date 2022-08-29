@@ -48,8 +48,8 @@ runs:
   using: "composite"
   steps:
     - name: stale pr 
-      # if: ${{ github.event_name == 'schedule' }}
-      run: ${{ github.action_path }}/main.sh stale
+      if: ${{ (github.event_name == 'workflow_dispatch') }}
+      run: ${{ github.action_path }}/stale.sh
       shell: bash 
     - name: description pr
       if: inputs.pr_description == 'true'
