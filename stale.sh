@@ -76,11 +76,11 @@ then
 
 else [ $UpdatedTime -gt $fifteen_days ]
    echo "This PR is stale because it has been open 15 days with no activity."
-  #  curl -X POST -u $owner:$token $labels \
-  # -d '{ "labels":["Stale"] }'
+   curl -X POST -u $owner:$token $labels \
+  -d '{ "labels":["Stale"] }'
 
-  # curl -X POST -u $owner:$token $comments_url \
-  # -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 5 days."}' 
+  curl -X POST -u $owner:$token $comments_url \
+  -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 5 days."}' 
 
 fi
 
@@ -93,11 +93,11 @@ if [ $LabelTime -gt $five_days ]
 then
    echo "This PR is closed because it has been stalled from 5 days"
 
-  # curl -X PATCH -u $owner:$token $pr_number \
-  # -d '{ "state": "closed" }'
+  curl -X PATCH -u $owner:$token $pr_number \
+  -d '{ "state": "closed" }'
 
-  # curl -X POST -u $owner:$token $comments_url \
-  # -d '{"body":"This PR is closed because it has been stalled from 5 days."}'
+  curl -X POST -u $owner:$token $comments_url \
+  -d '{"body":"This PR is closed because it has been stalled from 5 days."}'
 
 fi
 
@@ -125,8 +125,8 @@ fi
 if [ "$user" != "$GitBot" ];
 then
   echo "Remove stale label"
-  # curl -X DELETE -u $owner:$token $labels \
-  # -d '{ "labels":["Stale"] }'
+  curl -X DELETE -u $owner:$token $labels \
+  -d '{ "labels":["Stale"] }'
 fi
 
 "$@"
