@@ -125,7 +125,7 @@ then
   echo "Dont remove stale label"
 fi
 
-if [ "$user" != "$GitBot" ];
+if [ "$user" = "User" ];
 then
   echo "Remove stale label"
   curl -X DELETE -u $owner:$token $labels \
