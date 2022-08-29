@@ -48,11 +48,11 @@ runs:
   using: "composite"
   steps:
     - name: stale pr 
-      if: ${{ (github.event_name == 'workflow_dispatch') }}
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       run: ${{ github.action_path }}/stale.sh
       shell: bash 
     - name: issue comments 
-      if: ${{ (github.event_name == 'issues') }}
+      if: ${{ github.event_name == 'issue_comment' }}
       run: ${{ github.action_path }}/stale.sh comments
       shell: bash       
     - name: description pr
