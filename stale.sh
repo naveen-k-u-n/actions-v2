@@ -101,6 +101,8 @@ then
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR is closed because it has been stalled from 5 days."}'
 
+else [ $LabelTime -lt $five_days ]
+  echo "PR label is lessthan 5 days"
 fi
 
 }
@@ -121,9 +123,8 @@ fi
 if [ "$user" = "$GitBot" ];
 then
   echo "Dont remove stale label"
-  # curl -X DELETE -u $owner:$token $labels \
-  # -d '{ "labels":["Stale"] }'
 fi
+
 if [ "$user" != "$GitBot" ];
 then
   echo "Remove stale label"
