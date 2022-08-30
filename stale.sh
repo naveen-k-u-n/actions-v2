@@ -121,7 +121,7 @@ fi
 
 comments()
 {
-if [ "$user" = "$GitBot" ];
+if [ "$user" = "Bot" ];
 then
   echo "Dont remove stale label"
 fi
