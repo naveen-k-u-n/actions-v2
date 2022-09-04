@@ -119,20 +119,20 @@ then
 fi
 
 
-comments()
-{
-if [ "$user" = "Bot" ];
-then
-  echo "Dont remove stale label"
-fi
+# comments()
+# {
+# if [ "$user" = "Bot" ];
+# then
+#   echo "Dont remove stale label"
+# fi
 
-if [ "$user" = "User" ];
-then
-  echo "Remove stale label"
-  curl -X DELETE -u $owner:$token $issue_number/labels \
-  -d '{ "labels":["Stale"] }'
-fi
-}
+# if [ "$user" = "User" ];
+# then
+#   echo "Remove stale label"
+#   curl -X DELETE -u $owner:$token $issue_number/labels \
+#   -d '{ "labels":["Stale"] }'
+# fi
+# }
 
 # if [ "$user" = "Bot" ];
 # then
