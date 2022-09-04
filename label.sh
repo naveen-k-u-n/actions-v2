@@ -39,6 +39,7 @@ echo "User: $user"
 
 label="Stale"
 GitBot="Bot"
+one_day=100
 
 
 comments()
@@ -51,6 +52,16 @@ fi
 if [ "$user" = "User" ];
 then
   echo "Remove stale label"
+  curl -X DELETE -u $owner:$token $issue_number/labels \
+  -d '{ "labels":["Stale"] }'
+fi
+}
+
+prupdate()
+{
+if [ $UpdatedTime -lt $one_day ]
+then
+  echo "PR updated. Remove stale label"
   curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
 fi

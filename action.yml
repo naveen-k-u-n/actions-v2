@@ -54,6 +54,10 @@ runs:
     - name: issue comments 
       if: ${{ github.event.issue.pull_request }}
       run: ${{ github.action_path }}/label.sh comments
+      shell: bash  
+    - name: issue comments 
+      if: ${{ github.event_name == 'pull_request' }}
+      run: ${{ github.action_path }}/label.sh prupdate
       shell: bash       
     - name: description pr
       if: inputs.pr_description == 'true'
