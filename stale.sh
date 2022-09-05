@@ -107,7 +107,7 @@ fi
 
 }
 
-
+# Schedule on labels
 
 if [ "$label_on_pr" = "$label" ];
 then
@@ -118,32 +118,15 @@ then
   stale_label
 fi
 
-
-# comments()
-# {
-# if [ "$user" = "Bot" ];
-# then
-#   echo "Dont remove stale label"
-# fi
-
-# if [ "$user" = "User" ];
-# then
-#   echo "Remove stale label"
-#   curl -X DELETE -u $owner:$token $issue_number/labels \
-#   -d '{ "labels":["Stale"] }'
-# fi
-# }
-
-# if [ "$user" = "Bot" ];
-# then
-#   echo "Dont remove stale label"
-# fi
-
-# if [ "$user" = "User" ];
-# then
-#   echo "Remove stale label"
-# #   curl -X DELETE -u $owner:$token $issue_number/labels \
-# #   -d '{ "labels":["Stale"] }'
-# fi
+# If PR updated
+prupdate()
+{
+if [ $UpdatedTime -lt $onemin ]
+then
+  echo "PR updated. Remove stale label"
+  curl -X DELETE -u $owner:$token $issue_number/labels \
+  -d '{ "labels":["Stale"] }'
+fi
+}
 
 "$@"

@@ -25,15 +25,6 @@ label_on_pr=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r 
 
 user=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/comments | jq -r '.[-1].user.type')
 
-live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-convert_live_date=$(date -u -d "$live_date" +%s)
-convert_pr_updated_at=$(date -u -d "$pr_updated_at" +%s)
-convert_label_created_at=$(date -u -d "$label_created_at" +%s)
-
-UpdatedTime=$((convert_live_date - convert_pr_updated_at))
-LabelTime=$((convert_live_date - convert_label_created_at))
-
-
 echo "pr number: $pr_number"
 echo "issue number: $issue_number"
 echo "comments: $comments_url"
@@ -44,13 +35,8 @@ echo "labels on pr: $label_on_pr"
 echo "labels: $labels"
 echo "User: $user"
 
-echo "UpdatedTime: $UpdatedTime"
-echo "LabelTime: $LabelTime"
-
 label="Stale"
 GitBot="Bot"
-one_day=100
-
 
 comments()
 {
@@ -62,16 +48,6 @@ fi
 if [ "$user" = "User" ];
 then
   echo "Remove stale label"
-  curl -X DELETE -u $owner:$token $issue_number/labels \
-  -d '{ "labels":["Stale"] }'
-fi
-}
-
-prupdate()
-{
-if [ $UpdatedTime -lt $one_day ]
-then
-  echo "PR updated. Remove stale label"
   curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
 fi
