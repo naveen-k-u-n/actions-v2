@@ -12,10 +12,10 @@ pull_number="$PR_NUMBER"
 
 # Stale Pull Request
 
-pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[].url')
-issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[].url')
-comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[].comments_url')
-labels=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[].url')
+pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
+issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
+comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
+labels=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 
 pr_created_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].created_at')
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
@@ -111,11 +111,11 @@ fi
 
 # Schedule on labels
 
-if [ "$label_on_pr" = "$label" ];
+if [ "$label_on_pr" = "Stale" ];
 then
   stale_close
 fi
-if [ "$label_on_pr" != "$label" ];
+if [ "$label_on_pr" != "Stale" ];
 then
   stale_label
 fi
