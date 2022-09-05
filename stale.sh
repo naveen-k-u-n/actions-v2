@@ -101,6 +101,12 @@ then
   curl -X POST -u $owner:$token $comments_url \
   -d '{"body":"This PR is closed because it has been stalled from 5 days."}'
 
+  curl -X DELETE -u $owner:$token $issue_number/labels \
+  -d '{ "labels":["Stale"] }'
+  
+  curl -X POST -u $owner:$token $labels \
+  -d '{ "labels":["Stale"] }'
+
 else [ $LabelTime -lt $five_days ]
   echo "PR label is lessthan 5 days"
 fi
