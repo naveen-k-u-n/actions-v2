@@ -103,9 +103,9 @@ then
 
   curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
-  
+
   curl -X POST -u $owner:$token $labels \
-  -d '{ "labels":["Stale"] }'
+  -d '{ "labels":["Stale-Close"] }'
 
 else [ $LabelTime -lt $five_days ]
   echo "PR label is lessthan 5 days"
