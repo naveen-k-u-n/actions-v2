@@ -12,8 +12,8 @@ pull_number="$PR_NUMBER"
 
 # Stale Pull Request
 
-pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].url')
-issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
+pr_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[].url')
+issue_number=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[].url')
 comments_url=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].comments_url')
 labels=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[-1].url')
 
@@ -64,10 +64,6 @@ echo "convert label created at: $convert_label_created_at"
 
 echo "UpdatedTime: $UpdatedTime"
 echo "LabelTime: $LabelTime"
-
-
-label="Stale"
-GitBot="Bot"
 
 stale_label() 
 {  
