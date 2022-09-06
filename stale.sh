@@ -21,7 +21,6 @@ pr_created_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r
 pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r '.[-1].updated_at')
 
 label_created_at=$(curl -X GET -u $owner:$token $issue_number/events | jq -r '.[-1] | select(.event == "labeled") | select( .label.name == "Stale") | .created_at')
-label_on_pr=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues | jq -r '.[].labels[].name')
 
 user=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/comments | jq -r '.[-1].user.type')
 
@@ -42,8 +41,8 @@ LabelTime=$((convert_live_date - convert_label_created_at))
 # STALE_LABEL=15
 # STALE_CLOSE=5
 
-five_days=100
-fifteen_days=120
+five_days=120
+fifteen_days=100
 onemin=60
 
 echo "pr number: $pr_number"
@@ -52,7 +51,6 @@ echo "comments: $comments_url"
 echo "pr created at: $pr_created_at"
 echo "pr updated at: $pr_updated_at"
 echo "label created at: $label_created_at"
-echo "labels on pr: $label_on_pr"
 echo "labels: $labels"
 echo "User: $user"
 
@@ -78,7 +76,7 @@ else [ $UpdatedTime -gt $fifteen_days ]
   -d '{ "labels":["Stale"] }'
 
   curl -X POST -u $owner:$token $comments_url \
-  -d '{"body":"This PR is stale because it has been open 15 days with no activity. Remove stale label or comment or this will be closed in 5 days."}' 
+  -d '{"body":"This PR is stale because it has been opened 15 days with no activity. Remove stale label or update/comment on PR otherwise this will be closed in 5 days."}' 
 
 fi
 
