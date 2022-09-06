@@ -103,6 +103,8 @@ fi
 }
 
 # Schedule on labels
+stale()
+{
 if [ "$label_on_pr" = "Stale" ];
 then
   stale_close
@@ -111,6 +113,7 @@ if [ "$label_on_pr" != "Stale" ];
 then
   stale_label
 fi
+}
 
 # pull_request updated
 prupdate()
