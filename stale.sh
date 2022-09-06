@@ -22,8 +22,6 @@ pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r
 
 label_created_at=$(curl -X GET -u $owner:$token $issue_number/events | jq -r '.[-1] | select(.event == "labeled") | select( .label.name == "Stale") | .created_at')
 
-user=$(curl -X GET -u $owner:$token $issue_number/comments | jq -r '.[-1].updated_at')
-
 
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 convert_live_date=$(date -u -d "$live_date" +%s)
@@ -52,7 +50,6 @@ echo "pr created at: $pr_created_at"
 echo "pr updated at: $pr_updated_at"
 echo "label created at: $label_created_at"
 echo "labels: $labels"
-echo "User: $user"
 
 echo "--------------------"
 echo "live date: $live_date"
@@ -79,12 +76,11 @@ else [ $UpdatedTime -gt $fifteen_days ]
   -d '{"body":"This PR is stale because it has been opened 15 days with no activity. Remove stale label or update/comment on PR otherwise this will be closed in 5 days."}' 
 
 fi
-
 }
+
 
 stale_close()
 {
-
 if [ $LabelTime -gt $five_days ]
 then
    echo "This PR is closed because it has been stalled from 5 days"
@@ -104,11 +100,9 @@ then
 else [ $LabelTime -lt $five_days ]
   echo "PR label is lessthan 5 days"
 fi
-
 }
 
 # Schedule on labels
-
 if [ "$label_on_pr" = "Stale" ];
 then
   stale_close
@@ -118,7 +112,7 @@ then
   stale_label
 fi
 
-# If PR updated
+# pull_request updated
 prupdate()
 {
 if [ $UpdatedTime -lt $onemin ]
@@ -129,16 +123,12 @@ then
 fi
 }
 
+# PR updated on comments
 comments()
 {
-# if [ "$user" = "Bot" ];
-# then
-#   echo "Dont remove stale label"
-# fi
-
 if [ $UpdatedTime -lt $onemin ]
 then
-  echo "Remove stale label"
+  echo "PR upadted by comments. Remove stale label"
   curl -X DELETE -u $owner:$token $issue_number/labels \
   -d '{ "labels":["Stale"] }'
 fi
