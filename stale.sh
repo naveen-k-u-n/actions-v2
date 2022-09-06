@@ -22,7 +22,7 @@ pr_updated_at=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/pulls | jq -r
 
 label_created_at=$(curl -X GET -u $owner:$token $issue_number/events | jq -r '.[-1] | select(.event == "labeled") | select( .label.name == "Stale") | .created_at')
 
-user=$(curl -X GET -u $owner:$token $BASE_URI/repos/$repo/issues/comments | jq -r '.[-1].user.type')
+user=$(curl -X GET -u $owner:$token $issue_number/comments | jq -r '.[-1].updated_at')
 
 
 live_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -131,12 +131,12 @@ fi
 
 comments()
 {
-if [ "$user" = "Bot" ];
-then
-  echo "Dont remove stale label"
-fi
+# if [ "$user" = "Bot" ];
+# then
+#   echo "Dont remove stale label"
+# fi
 
-if [ "$user" = "User" ];
+if [ $UpdatedTime -lt $onemin ]
 then
   echo "Remove stale label"
   curl -X DELETE -u $owner:$token $issue_number/labels \
