@@ -48,25 +48,18 @@ runs:
   using: "composite"
   steps:
     - name: stale pr 
-      # if: ${{ github.event_name == 'schedule' }}
-      run: ${{ github.action_path }}/main.sh stale
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: ${{ github.action_path }}/stale.sh
       shell: bash 
-    - name: description pr
-      if: inputs.pr_description == 'true'
-      run: ${{ github.action_path }}/main.sh description
-      shell: bash
-    - name: target pr  
-      if: inputs.base_ref == 'true' && inputs.head_ref == 'false'
-      run: ${{ github.action_path }}/main.sh target
+    - name: issue comments 
+      if: ${{ github.event.issue.pull_request }}
+      run: ${{ github.action_path }}/stale.sh comments
       shell: bash  
-    - name: merge pr  
-      if: inputs.merge_pr == 'true'
-      run: ${{ github.action_path }}/main.sh merge
-      shell: bash 
-    - name: close pr  
-      if: inputs.close_pr == 'true'
-      run: ${{ github.action_path }}/main.sh close
-      shell: bash       
+    - name: PR Update
+      if: ${{ github.event_name == 'pull_request' }}
+      run: ${{ github.action_path }}/stale.sh prupdate
+      shell: bash
+       
       env:
         REPO_OWNER: ${{ inputs.owner }}
         REPO_NAME: ${{ inputs.repo }}
